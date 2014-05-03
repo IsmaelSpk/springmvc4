@@ -24,7 +24,6 @@
 		  		<bean class="br.com.caelum.contas.StringToEnumConverterFactory"/>
 		  	</list>
 		  </property>
-	
 	</bean>
 	
 </beans>

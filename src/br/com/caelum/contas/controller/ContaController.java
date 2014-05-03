@@ -29,13 +29,12 @@ public class ContaController {
 	
 	@RequestMapping("/listaContas")
 	public ModelAndView lista(){
-		
-		System.out.println("***listaContas***");
-		
 		ContaDAO dao  = new ContaDAO();
 		List<Conta> contas = dao.lista();
 		
-		ModelAndView mv = new ModelAndView("conta/lista");
+		System.out.println("Numero de registros:"+contas.size());
+		
+		ModelAndView mv = new ModelAndView("lista");
 		mv.addObject("todasContas",contas);
 		
 		return mv;
