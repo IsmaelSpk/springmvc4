@@ -16,7 +16,7 @@
 		<property name="prefix" value="/WEB-INF/views/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
-	
+
 	<bean id="conversionService"
 		  class="org.springframework.context.support.ConversionServiceFactoryBean">
 		  <property name="converters">
@@ -25,5 +25,4 @@
 		  	</list>
 		  </property>
 	</bean>
-	
 </beans>
