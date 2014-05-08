@@ -2,6 +2,7 @@ package br.com.caelum.contas.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -61,6 +62,14 @@ public class ContaController {
 		ModelAndView mv = new ModelAndView("conta/lista");
 		mv.addObject("todasContas",contas);
 		return mv;
+	}
+	
+	@RequestMapping("/pagaConta")
+	public void pagaConta( Conta conta, HttpServletResponse resposta ){
+		ContaDAO contaDAO = new ContaDAO();
+		contaDAO.paga(conta.getId());
+		System.out.println("pagamento de Conta via Ajax");
+		resposta.setStatus(200);
 	}
 	
 }

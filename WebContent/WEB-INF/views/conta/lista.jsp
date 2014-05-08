@@ -7,6 +7,30 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Listagem de Contas</title>
+	
+	<!-- JQUERY -->
+	<script src="resources/js/jquery.js"></script>
+	
+	<!-- TWITTER BOOTSTRAP CSS --> 
+	<link  href="resources/js/bootstrap-3.1.1/css/bootstrap.css" rel="stylesheet" type="text/css" /> 
+	
+	<!-- TWITTER BOOTSTRAP JS --> 
+	<script src="resources/js/bootstrap-3.1.1/js/bootstrap.js"></script>
+	
+	<script type="text/javascript">
+
+		function deuCerto( dadosResposta ){
+			alert("Conta Paga com Sucesso !!!");
+		}
+
+		function pagaAgora( id ){
+			$.get("pagaConta?id=" + id);
+
+			$.post("pagaConta", {'id' : id}, function(resposta) { $("#rowStatus_"+id).text("Pago");}); 		    
+		}
+		
+	</script>
+		
 </head>
 <body>
 
@@ -63,7 +87,6 @@
 		<!-- /.navbar-collapse -->
 	</div>
 	<!-- /.container-fluid --> </nav>
-    -->
 
 	<table>
 		<tr>
@@ -77,20 +100,26 @@
 		</tr>
 
 		<c:forEach items="${todasContas}" var="conta">
-			<tr>
+			<tr id="roww_${conta.id}">
 				<td>${conta.id}</td>
 				<td>${conta.descricao}</td>
 				<td>${conta.valor}</td>
 				<td>${conta.tipo}</td>
-				<td><c:if test="${conta.paga eq false }">
+				<td id="rowStatus_${conta.id}">
+				    <c:if test="${conta.paga eq false }">
 						NaoPago!
-					</c:if> <c:if test="${conta.paga eq true }">
-						Pago!!
-					</c:if></td>
-				<td><fmt:formatDate value="${conta.dataPagamento.time}"
+					</c:if> 
+					<c:if test="${conta.paga eq true }">
+						Pago
+					</c:if>
+				</td>
+				<td id="rowDtPgto_${conta.id}"><fmt:formatDate value="${conta.dataPagamento.time}"
 						pattern="dd/MM/yyyy" /></td>
-				<td><a href="removeConta?id=${conta.id}">Remover</a> <a
-					href="mostraConta?id=${conta.id}">Alterar</a></td>
+				<td><a href="removeConta?id=${conta.id}">Remover</a> | 
+				    <a href="mostraConta?id=${conta.id}">Alterar</a> |
+				    <c:if test="${conta.paga eq false}">
+			    		<a href="#" onclick="pagaAgora(${conta.id});">Pagar</a></td>
+				    </c:if>	
 			</tr>
 		</c:forEach>
 	</table>
