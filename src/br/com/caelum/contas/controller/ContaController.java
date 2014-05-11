@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +18,13 @@ import br.com.caelum.contas.modelo.Conta;
 @Controller
 public class ContaController {
 
+	private ContaDAO contaDAO;
+
+	@Autowired
+	public ContaController( ContaDAO contaDAO ) {
+		this.contaDAO = contaDAO;
+	}
+	
 	@RequestMapping("/form")
 	public String formulario(){
 		return "formulario";
@@ -28,36 +36,32 @@ public class ContaController {
 		if ( result.hasErrors() ){
 			return "formulario";
 		}
-		ContaDAO contaDAO = new ContaDAO();
-		contaDAO.adiciona(conta);
+		
+		this.contaDAO.adiciona(conta);
 		return "redirect:listaContas";
 	}
 	
 	@RequestMapping("/removeConta")
 	public String remove( Conta conta ){
-		ContaDAO contaDAO = new ContaDAO();
-		contaDAO.remove(conta);
+		this.contaDAO.remove(conta);
 		return "redirect:listaContas"; 
 	}
 	
 	@RequestMapping("/mostraConta")
 	public String mostra(Long id, Model model) {
-		ContaDAO dao = new ContaDAO();
-	    model.addAttribute("conta", dao.buscaPorId(id));
+	    model.addAttribute("conta", this.contaDAO.buscaPorId(id));
 	    return "conta/mostra";
 	}	
 	
 	@RequestMapping("/alteraConta")
 	public String altera(Conta conta) {
-		ContaDAO dao = new ContaDAO();
-		dao.altera(conta);
+	   this.contaDAO.altera(conta);
 	   return "redirect:listaContas";
 	}
 	
 	@RequestMapping("/listaContas")
 	public ModelAndView lista(){
-		ContaDAO dao  = new ContaDAO();
-		List<Conta> contas = dao.lista();
+		List<Conta> contas = contaDAO.lista();
 		//System.out.println("Numero de registros:"+contas.size());
 		ModelAndView mv = new ModelAndView("conta/lista");
 		mv.addObject("todasContas",contas);
@@ -66,7 +70,6 @@ public class ContaController {
 	
 	@RequestMapping("/pagaConta")
 	public void pagaConta( Conta conta, HttpServletResponse resposta ){
-		ContaDAO contaDAO = new ContaDAO();
 		contaDAO.paga(conta.getId());
 		System.out.println("pagamento de Conta via Ajax");
 		resposta.setStatus(200);

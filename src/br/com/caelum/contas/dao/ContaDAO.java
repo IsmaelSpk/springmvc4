@@ -9,16 +9,26 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import br.com.caelum.contas.ConnectionFactory;
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import br.com.caelum.contas.modelo.Conta;
 import br.com.caelum.contas.modelo.TipoDaConta;
 
+@Repository
 public class ContaDAO {
+	
 	private Connection connection;
 
-	public ContaDAO() {
+	@Autowired
+	public ContaDAO( DataSource ds ){
 		try {
-			this.connection = new ConnectionFactory().getConnection();
+			this.connection = ds.getConnection();
+			
+			System.out.println("conectou via injecao......................");
+			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -28,17 +38,16 @@ public class ContaDAO {
 		String sql = "insert into contas (descricao, paga, valor, tipo) values (?,?,?,?)";
 		PreparedStatement stmt;
 		try {
-			stmt = connection.prepareStatement(sql);
+			stmt = this.connection.prepareStatement(sql);
 			stmt.setString(1, conta.getDescricao());
 			stmt.setBoolean(2, conta.isPaga());
 			stmt.setDouble(3, conta.getValor());
 			stmt.setString(4, conta.getTipo().name());
 			stmt.execute();
-			connection.close();
+			this.connection.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		
 	}
 
 	public void remove(Conta conta) {
@@ -50,11 +59,10 @@ public class ContaDAO {
 		String sql = "delete from contas where id = ?";
 		PreparedStatement stmt;
 		try {
-			stmt = connection.prepareStatement(sql);
+			stmt = this.connection.prepareStatement(sql);
 			stmt.setLong(1, conta.getId());
 			stmt.execute();
-			
-			connection.close();
+			this.connection.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -64,7 +72,7 @@ public class ContaDAO {
 		String sql = "update contas set descricao = ?, paga = ?, dataPagamento = ?, tipo = ?, valor = ? where id = ?";
 		PreparedStatement stmt;
 		try {
-			stmt = connection.prepareStatement(sql);
+			stmt = this.connection.prepareStatement(sql);
 			stmt.setString(1, conta.getDescricao());
 			stmt.setBoolean(2, conta.isPaga());
 			stmt.setDate(3, conta.getDataPagamento() != null ? new Date(conta
@@ -74,7 +82,7 @@ public class ContaDAO {
 			stmt.setLong(6, conta.getId());
 			stmt.execute();
 			
-			connection.close();
+			this.connection.close();
 			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -96,7 +104,7 @@ public class ContaDAO {
 
 			rs.close();
 			stmt.close();
-			connection.close();
+			this.connection.close();
 
 			return contas;
 		} catch (SQLException e) {
@@ -118,15 +126,14 @@ public class ContaDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			if (rs.next()) {
-				connection.close();
+				this.connection.close();
 				return populaConta(rs);
 			}
 
 			rs.close();
 			stmt.close();
-			
-
-			connection.close();
+		
+			this.connection.close();
 			return null;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -142,13 +149,13 @@ public class ContaDAO {
 		String sql = "update contas set paga = ?, dataPagamento = ? where id = ?";
 		PreparedStatement stmt;
 		try {
-			stmt = connection.prepareStatement(sql);
+			stmt = this.connection.prepareStatement(sql);
 			stmt.setBoolean(1, true);
 			stmt.setDate(2, new Date(Calendar.getInstance().getTimeInMillis()));
 			stmt.setLong(3, id);
 			stmt.execute();
 			
-			connection.close();
+			this.connection.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}

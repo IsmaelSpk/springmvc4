@@ -88,46 +88,49 @@
 	</div>
 	<!-- /.container-fluid --> </nav>
 
-	<table>
-		<tr>
-			<th>Código</th>
-			<th>Descrição</th>
-			<th>Valor</th>
-			<th>Tipo</th>
-			<th>Pago?</th>
-			<th>Dt Pagamento</th>
-			<th>Ações</th>
-		</tr>
+	<div class="panel panel-default" style="width:60%; Margin:0 auto;">
+		<div class="panel-heading">Lista de Contas</div>
+		<div class="panel-body">
+			<p> Mostra todas as Lista de Documentos Pagos e Recebidos </p>
+		</div>
 
-		<c:forEach items="${todasContas}" var="conta">
-			<tr id="roww_${conta.id}">
-				<td>${conta.id}</td>
-				<td>${conta.descricao}</td>
-				<td>${conta.valor}</td>
-				<td>${conta.tipo}</td>
-				<td id="rowStatus_${conta.id}">
-				    <c:if test="${conta.paga eq false }">
-						NaoPago!
-					</c:if> 
-					<c:if test="${conta.paga eq true }">
-						Pago
-					</c:if>
-				</td>
-				<td id="rowDtPgto_${conta.id}"><fmt:formatDate value="${conta.dataPagamento.time}"
-						pattern="dd/MM/yyyy" /></td>
-				<td><a href="removeConta?id=${conta.id}">Remover</a> | 
-				    <a href="mostraConta?id=${conta.id}">Alterar</a> |
-				    <c:if test="${conta.paga eq false}">
-			    		<a href="#" onclick="pagaAgora(${conta.id});">Pagar</a></td>
-				    </c:if>	
+		<table class="table table-bordered table-striped table-condensed table-responsive">
+			<tr>
+				<th>Código</th>
+				<th>Descrição</th>
+				<th>Valor</th>
+				<th>Tipo</th>
+				<th>Pago?</th>
+				<th>Dt Pagamento</th>
+				<th>Ações</th>
 			</tr>
-		</c:forEach>
-	</table>
-
-	<br />
-	<br />
-
+			<c:forEach items="${todasContas}" var="conta">
+				<tr id="roww_${conta.id}">
+					<td>${conta.id}</td>
+					<td>${conta.descricao}</td>
+					<td>${conta.valor}</td>
+					<td>${conta.tipo}</td>
+					<td id="rowStatus_${conta.id}"><c:if
+							test="${conta.paga eq false }">
+						NaoPago!
+					</c:if> <c:if test="${conta.paga eq true }">
+						Pago
+					</c:if></td>
+					<td id="rowDtPgto_${conta.id}"><fmt:formatDate
+							value="${conta.dataPagamento.time}" pattern="dd/MM/yyyy" /></td>
+					<td><a href="removeConta?id=${conta.id}">Remover</a> | <a
+						href="mostraConta?id=${conta.id}">Alterar</a> | <c:if
+							test="${conta.paga eq false}">
+							<a href="#" onclick="pagaAgora(${conta.id});">Pagar</a></td>
+					</c:if>
+				</tr>
+			</c:forEach>
+		</table>
+	</div>
+	<br/>
+	<br/>
 	<a href="form">Incluir nova Conta</a>
+
 
 </body>
 </html>
