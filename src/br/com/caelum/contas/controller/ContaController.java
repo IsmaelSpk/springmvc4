@@ -25,6 +25,11 @@ public class ContaController {
 		this.contaDAO = contaDAO;
 	}
 	
+	@RequestMapping("/")
+	public String index(){
+		return "index";
+	}
+	
 	@RequestMapping("/form")
 	public String formulario(){
 		return "formulario";

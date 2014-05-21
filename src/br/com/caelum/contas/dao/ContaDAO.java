@@ -21,14 +21,14 @@ import br.com.caelum.contas.modelo.TipoDaConta;
 public class ContaDAO {
 	
 	private Connection connection;
+	private DataSource ds;
 
 	@Autowired
 	public ContaDAO( DataSource ds ){
+		this.ds = ds;
 		try {
-			this.connection = ds.getConnection();
-			
-			System.out.println("conectou via injecao......................");
-			
+			this.connection = this.ds.getConnection();
+			System.out.println("conectou via injecao......................");			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -38,6 +38,7 @@ public class ContaDAO {
 		String sql = "insert into contas (descricao, paga, valor, tipo) values (?,?,?,?)";
 		PreparedStatement stmt;
 		try {
+			this.connection = ds.getConnection();
 			stmt = this.connection.prepareStatement(sql);
 			stmt.setString(1, conta.getDescricao());
 			stmt.setBoolean(2, conta.isPaga());
@@ -59,6 +60,7 @@ public class ContaDAO {
 		String sql = "delete from contas where id = ?";
 		PreparedStatement stmt;
 		try {
+			this.connection = ds.getConnection();
 			stmt = this.connection.prepareStatement(sql);
 			stmt.setLong(1, conta.getId());
 			stmt.execute();
@@ -72,6 +74,7 @@ public class ContaDAO {
 		String sql = "update contas set descricao = ?, paga = ?, dataPagamento = ?, tipo = ?, valor = ? where id = ?";
 		PreparedStatement stmt;
 		try {
+			this.connection = ds.getConnection();
 			stmt = this.connection.prepareStatement(sql);
 			stmt.setString(1, conta.getDescricao());
 			stmt.setBoolean(2, conta.isPaga());
@@ -92,20 +95,16 @@ public class ContaDAO {
 	public List<Conta> lista() {
 		try {
 			List<Conta> contas = new ArrayList<Conta>();
-			PreparedStatement stmt = this.connection
-					.prepareStatement("select * from contas");
-
+			this.connection = ds.getConnection();
+			PreparedStatement stmt = this.connection.prepareStatement("select * from contas");
 			ResultSet rs = stmt.executeQuery();
-
 			while (rs.next()) {
 				// adiciona a conta na lista
 				contas.add(populaConta(rs));
 			}
-
 			rs.close();
 			stmt.close();
 			this.connection.close();
-
 			return contas;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -120,8 +119,8 @@ public class ContaDAO {
 		}
 
 		try {
-			PreparedStatement stmt = this.connection
-					.prepareStatement("select * from contas where id = ?");
+			this.connection = ds.getConnection();
+			PreparedStatement stmt = this.connection.prepareStatement("select * from contas where id = ?");
 			stmt.setLong(1, id);
 			ResultSet rs = stmt.executeQuery();
 
@@ -149,6 +148,7 @@ public class ContaDAO {
 		String sql = "update contas set paga = ?, dataPagamento = ? where id = ?";
 		PreparedStatement stmt;
 		try {
+			this.connection = ds.getConnection();
 			stmt = this.connection.prepareStatement(sql);
 			stmt.setBoolean(1, true);
 			stmt.setDate(2, new Date(Calendar.getInstance().getTimeInMillis()));

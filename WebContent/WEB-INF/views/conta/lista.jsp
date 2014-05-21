@@ -94,7 +94,7 @@
 			<p> Mostra todas as Lista de Documentos Pagos e Recebidos </p>
 		</div>
 
-		<table class="table table-bordered table-striped table-condensed table-responsive">
+		<table class="table table-bordered table-striped table-condensed table-responsive table-with-link">
 			<tr>
 				<th>Código</th>
 				<th>Descrição</th>
@@ -105,7 +105,7 @@
 				<th>Ações</th>
 			</tr>
 			<c:forEach items="${todasContas}" var="conta">
-				<tr id="roww_${conta.id}">
+				<tr id="roww_${conta.id}" class="link-container">
 					<td>${conta.id}</td>
 					<td>${conta.descricao}</td>
 					<td>${conta.valor}</td>
